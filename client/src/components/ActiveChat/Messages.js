@@ -4,21 +4,41 @@ import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
 const Messages = (props) => {
-  const { messages, otherUser, userId } = props;
+    const { messages, otherUser, userId } = props;
 
-  return (
-    <Box>
-      {messages.map((message) => {
-        const time = moment(message.createdAt).format("h:mm");
+    React.useEffect(() => {
+        console.log(userId);
+    }, [userId]);
 
-        return message.senderId === userId ? (
-          <SenderBubble key={message.id} text={message.text} time={time} />
-        ) : (
-          <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
-        );
-      })}
-    </Box>
-  );
+    return (
+        <Box>
+            {messages
+                .sort((a, b) =>
+                    new Date(a.updatedAt).valueOf() >
+                    new Date(b.updatedAt).valueOf()
+                        ? 1
+                        : -1
+                )
+                .map((message, idx) => {
+                    const time = moment(message.createdAt).format("h:mm");
+
+                    return message.senderId === userId ? (
+                        <SenderBubble
+                            key={idx}
+                            text={message.text}
+                            time={time}
+                        />
+                    ) : (
+                        <OtherUserBubble
+                            key={idx}
+                            text={message.text}
+                            time={time}
+                            otherUser={otherUser}
+                        />
+                    );
+                })}
+        </Box>
+    );
 };
 
 export default Messages;
