@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
             // sender: data.sender,
             // conversationId: data.conversationId,
             message: data,
-            sender: data.senderId,
+            sender: data.sender,
         });
     });
 

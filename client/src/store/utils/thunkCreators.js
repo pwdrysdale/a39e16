@@ -98,8 +98,13 @@ const sendMessage = (data, body) => {
         updatedAt: data.message.updatedAt,
         text: data.message.text,
         recipientId: body.recipientId,
-        sender: data.senderId,
-        //?
+        sender: data.sender
+            ? {
+                  id: data.sender ? data.sender.id : null,
+                  online: data.sender ? data.sender.online : null,
+                  username: data.sender ? data.sender.username : null,
+              }
+            : null,
         conversationId: body.conversationId,
     });
 };
