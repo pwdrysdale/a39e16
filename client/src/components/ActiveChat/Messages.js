@@ -6,10 +6,6 @@ import moment from "moment";
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
 
-  React.useEffect(() => {
-    console.log(userId);
-  }, [userId]);
-
   return (
     <Box>
       {messages
