@@ -27,18 +27,18 @@ const rootReducer = (state, action) => {
   return appReducer(state, action);
 };
 
+// Changes to the sore setup below to get redux dev tools to work
+// taken from redux docs
 const middleware = applyMiddleware(thunkMiddleware, loggerMiddleware);
 
 const composeEnhancers =
   typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-      })
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
     : compose;
 
 const enhancer = composeEnhancers(middleware);
 
 export default createStore(
   rootReducer,
-  process.env.NODE_ENV !== "prododuction" ? enhancer : middleware
+  process.env.NODE_ENV !== "production" ? enhancer : middleware
 );

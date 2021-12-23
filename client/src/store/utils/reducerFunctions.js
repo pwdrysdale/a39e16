@@ -1,6 +1,8 @@
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
+  // Most of the Bug fix: Sending messages #1 ticket issues were here (in this function),
+  // to do with mutating the state.
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
