@@ -11,7 +11,7 @@ Message.belongsTo(Conversation);
 Conversation.hasMany(Message);
 
 module.exports = {
-    User,
-    Conversation,
-    Message,
+  User,
+  Conversation,
+  Message,
 };

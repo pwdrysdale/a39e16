@@ -8,15 +8,15 @@ import { theme } from "./themes/theme";
 import Routes from "./routes";
 
 function App() {
-    return (
-        <Provider store={store}>
-            <MuiThemeProvider theme={theme}>
-                <BrowserRouter>
-                    <Routes />
-                </BrowserRouter>
-            </MuiThemeProvider>
-        </Provider>
-    );
+  return (
+    <Provider store={store}>
+      <MuiThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Routes />
+        </BrowserRouter>
+      </MuiThemeProvider>
+    </Provider>
+  );
 }
 
 export default App;
