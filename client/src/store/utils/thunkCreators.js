@@ -1,10 +1,12 @@
 import axios from "axios";
 import socket from "../../socket";
+import { setActiveChat } from "../activeConversation";
 import {
   gotConversations,
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  markConversationAsRead,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -112,6 +114,18 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);
     dispatch(setSearchedUsers(data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const setActiveChatWRead = (body) => async (dispatch) => {
+  console.log("Got to fire something");
+  try {
+    const { conversationId, userId, username } = body;
+    await axios.post(`/api/conversations`, { id: conversationId });
+    dispatch(setActiveChat(username));
+    dispatch(markConversationAsRead(conversationId, userId));
   } catch (error) {
     console.error(error);
   }

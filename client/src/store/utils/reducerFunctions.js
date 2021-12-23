@@ -87,3 +87,27 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+// mark conversations as read
+export const markConversationRead = (state, conversationId, userId) => {
+  console.log({
+    conversationId,
+    userId,
+  });
+  const newConversations = state.map((conversation) => {
+    if (conversation.id === conversationId) {
+      return {
+        ...conversation,
+        messages: conversation.messages.map((message) => {
+          if (message.senderId === userId) {
+            return {
+              ...message,
+              read: true,
+            };
+          } else return message;
+        }),
+      };
+    } else return conversation;
+  });
+  return newConversations;
+};

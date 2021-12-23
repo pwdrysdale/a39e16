@@ -78,4 +78,37 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// route to mark all the messages in a conversation as read once
+// the user has opened the conversation
+
+router.post("/", (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const userId = req.user.id;
+    const { id } = req.body;
+
+    // find all the messages in the conversation not belonging to the user
+    // and mark them as read
+    Message.update(
+      { read: true },
+      {
+        where: {
+          conversationId: id,
+          senderId: {
+            [Op.not]: userId,
+          },
+        },
+      }
+    )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(next);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
