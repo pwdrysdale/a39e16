@@ -1,12 +1,11 @@
 import axios from "axios";
 import io from "socket.io-client";
-import store, { clearOnLogout } from "./store";
+import store from "./store";
 import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
 } from "./store/conversations";
-import { addIncomingMessage } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 

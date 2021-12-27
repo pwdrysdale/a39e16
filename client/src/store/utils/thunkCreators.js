@@ -9,7 +9,6 @@ import {
   markConversationAsRead,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
-import store from "../../store";
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
