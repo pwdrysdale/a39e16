@@ -47,4 +47,27 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+// post route for an id that marks a specific messasge as read
+router.post("/read/:id", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+    const userId = req.user.id;
+    const { id } = req.params;
+    const message = await Message.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!message) {
+      return res.sendStatus(404);
+    }
+    await message.update({ read: true });
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

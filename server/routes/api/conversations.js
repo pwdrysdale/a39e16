@@ -80,7 +80,6 @@ router.get("/", async (req, res, next) => {
 
 // route to mark all the messages in a conversation as read once
 // the user has opened the conversation
-
 router.post("/", (req, res, next) => {
   try {
     if (!req.user) {

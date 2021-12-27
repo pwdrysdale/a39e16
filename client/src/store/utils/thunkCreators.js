@@ -9,6 +9,7 @@ import {
   markConversationAsRead,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+import store from "../../store";
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
@@ -120,7 +121,6 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const setActiveChatWRead = (body) => async (dispatch) => {
-  console.log("Got to fire something");
   try {
     const { conversationId, userId, username } = body;
     await axios.post(`/api/conversations`, { id: conversationId });

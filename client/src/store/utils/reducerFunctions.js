@@ -3,6 +3,7 @@ export const addMessageToStore = (state, payload) => {
   // if sender isn't null, that means the message needs to be put in a brand new convo
   // Most of the Bug fix: Sending messages #1 ticket issues were here (in this function),
   // to do with mutating the state.
+
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
@@ -89,11 +90,9 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 };
 
 // mark conversations as read
+// note that the userId argument is the current user's id (not the one
+// who's messages we are marking as read)
 export const markConversationRead = (state, conversationId, userId) => {
-  console.log({
-    conversationId,
-    userId,
-  });
   const newConversations = state.map((conversation) => {
     if (conversation.id === conversationId) {
       return {

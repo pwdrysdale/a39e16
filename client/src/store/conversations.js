@@ -70,7 +70,6 @@ export const addConversation = (recipientId, newMessage) => {
 };
 
 export const markConversationAsRead = (conversationId, userId) => {
-  console.log(conversationId, userId);
   return {
     type: MARK_CONVERSATION_READ,
     payload: { conversationId, userId },
