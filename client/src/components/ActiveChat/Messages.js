@@ -10,7 +10,11 @@ const Messages = (props) => {
     if (!msgs) return [];
     if (msgs.length === 0) return msgs;
     return msgs.sort((a, b) => {
-      return a.createdAt.valueOf() - b.createdAt.valueOf() ? 1 : -1;
+      return a.createdAt.valueOf() === b.createdAt.valueOf()
+        ? 0
+        : a.createdAt.valueOf() > b.createdAt.valueOf()
+        ? 1
+        : -1;
     });
   }, []);
 
