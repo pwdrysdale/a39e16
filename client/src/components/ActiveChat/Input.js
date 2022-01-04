@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { FormControl, FilledInput } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
@@ -22,23 +22,26 @@ const Input = (props) => {
   const [text, setText] = useState("");
   const { postMessage, otherUser, conversationId, user } = props;
 
-  const handleChange = (event) => {
+  const handleChange = useCallback((event) => {
     setText(event.target.value);
-  };
+  }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
-    const reqBody = {
-      text: event.target.text.value,
-      recipientId: otherUser.id,
-      conversationId,
-      sender: conversationId ? null : user,
-    };
+  const handleSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
+      const reqBody = {
+        text: event.target.text.value,
+        recipientId: otherUser.id,
+        conversationId,
+        sender: conversationId ? null : user,
+      };
 
-    await postMessage(reqBody);
-    setText("");
-  };
+      await postMessage(reqBody);
+      setText("");
+    },
+    [postMessage, otherUser, conversationId, user]
+  );
 
   return (
     <form className={classes.root} onSubmit={handleSubmit}>

@@ -5,7 +5,7 @@ const db = new Sequelize(
   {
     logging: false,
     // alter: true,
-    // force: false,
+    // force: true,
   }
 );
 

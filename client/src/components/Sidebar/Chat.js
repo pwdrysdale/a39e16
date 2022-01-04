@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,15 +26,17 @@ const Chat = (props) => {
   const { conversation } = props;
   const { otherUser } = conversation;
 
-  const handleClick = async (conversation) => {
-    const body = {
-      conversationId: conversation.id,
-      userId: conversation.otherUser.id,
-      username: conversation.otherUser.username,
-    };
-    console.log(body);
-    setActiveChatWRead(body)(props.dispatch);
-  };
+  const handleClick = useCallback(
+    async (conversation) => {
+      const body = {
+        conversationId: conversation.id || null,
+        userId: conversation.otherUser.id,
+        username: conversation.otherUser.username,
+      };
+      setActiveChatWRead(body)(props.dispatch);
+    },
+    [props.dispatch]
+  );
 
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>

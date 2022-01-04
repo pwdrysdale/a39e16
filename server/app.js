@@ -3,26 +3,15 @@ const express = require("express");
 const { join } = require("path");
 const logger = require("morgan");
 const jwt = require("jsonwebtoken");
-// in the bin file
-// const socketio = require("socket.io");
-// const http = require("http");
 const session = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const db = require("./db");
 const { User } = require("./db/models");
-// create store for sessions to persist in database
 const sessionStore = new SequelizeStore({ db });
 
 const { json, urlencoded } = express;
 
 const app = express();
-// in the bin file
-// const server = http.createServer(app);
-// const io = socketio(server);
-
-// io.on("connection", (socket) => {
-//     socket.emit("connected", socket.id);
-// });
 
 app.use(logger("dev"));
 app.use(json());
