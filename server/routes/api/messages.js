@@ -48,7 +48,7 @@ router.post("/", async (req, res, next) => {
 });
 
 // post route for an id that marks a specific messasge as read
-router.post("/read/:id", async (req, res, next) => {
+router.put("/read/:id", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -64,7 +64,7 @@ router.post("/read/:id", async (req, res, next) => {
       return res.sendStatus(404);
     }
     await message.update({ read: true });
-    res.sendStatus(200);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

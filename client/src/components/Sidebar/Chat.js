@@ -32,6 +32,7 @@ const Chat = (props) => {
         conversationId: conversation.id || null,
         userId: conversation.otherUser.id,
         username: conversation.otherUser.username,
+        unreadMessages: 0,
       };
       setActiveChatWRead(body)(props.dispatch);
     },

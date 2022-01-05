@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from "..";
 import socket from "../../socket";
 import { setActiveChat } from "../activeConversation";
 import {
@@ -7,6 +8,7 @@ import {
   setNewMessage,
   setSearchedUsers,
   markConversationAsRead,
+  addToConversationUnreadCount,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -74,7 +76,15 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    dispatch(gotConversations(data));
+    const withUnreadCount = data.map((conversation) => {
+      const unreadMessages = conversation.messages.filter(
+        (message) =>
+          !message.read && conversation.otherUser.id === message.senderId
+      ).length;
+      return { ...conversation, unreadMessages };
+    });
+
+    dispatch(gotConversations(withUnreadCount));
   } catch (error) {
     console.error(error);
   }
@@ -122,10 +132,42 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 export const setActiveChatWRead = (body) => async (dispatch) => {
   try {
     const { conversationId, userId, username } = body;
-    await axios.post(`/api/conversations`, { id: conversationId });
+    if (conversationId) {
+      await axios.put(`/api/conversations`, { id: conversationId });
+    }
     dispatch(setActiveChat(username));
     dispatch(markConversationAsRead(conversationId, userId));
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const newMessage = (body) => async (dispatch) => {
+  const state = store.getState();
+  console.log(body);
+  // current conversation partner from the store
+  const conversationPartner = state.activeConversation;
+
+  // current conversation
+  const currentConvo = state.conversations.find(
+    (conversation) => conversation.otherUser.username === conversationPartner
+  );
+
+  const { message, sender } = body;
+
+  // if the current conversation is the one to which the new message belongs
+  if (
+    currentConvo &&
+    currentConvo.id &&
+    body.message.conversationId === currentConvo.id
+  ) {
+    if (message.conversationId !== null) {
+      axios.put(`/api/conversations`, { id: message.conversationId });
+    }
+    store.dispatch(setNewMessage({ ...message, read: true }, sender));
+    // if the current conversation is not the one to which the new message belongs
+  } else {
+    store.dispatch(setNewMessage(message, sender));
+    store.dispatch(addToConversationUnreadCount(message.conversationId));
   }
 };

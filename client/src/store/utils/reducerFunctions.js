@@ -9,6 +9,7 @@ export const addMessageToStore = (state, payload) => {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
+      unreadMessages: 0,
       latestMessageText: message.text,
     };
     return [newConvo, ...state];
@@ -97,6 +98,7 @@ export const markConversationRead = (state, conversationId, userId) => {
     if (conversation.id === conversationId) {
       return {
         ...conversation,
+        unreadMessages: 0,
         messages: conversation.messages.map((message) => {
           if (message.senderId === userId) {
             return {
@@ -105,6 +107,18 @@ export const markConversationRead = (state, conversationId, userId) => {
             };
           } else return message;
         }),
+      };
+    } else return conversation;
+  });
+  return newConversations;
+};
+
+export const addUnreadToConversation = (state, { conversationId }) => {
+  const newConversations = state.map((conversation) => {
+    if (conversation.id === conversationId) {
+      return {
+        ...conversation,
+        unreadMessages: conversation.unreadMessages + 1,
       };
     } else return conversation;
   });

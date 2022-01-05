@@ -40,19 +40,9 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const { latestMessageText, otherUser, unreadMessages } = conversation;
 
   clearOnLogout(otherUser);
-
-  const unreadMessages = React.useMemo(
-    () =>
-      conversation.messages.reduce(
-        (acc, msg) =>
-          msg.senderId === otherUser.id && msg.read === false ? acc + 1 : acc,
-        0
-      ),
-    [conversation.messages, otherUser]
-  );
 
   return (
     <Box className={classes.root}>
