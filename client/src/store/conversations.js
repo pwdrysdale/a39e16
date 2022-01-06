@@ -6,6 +6,7 @@ import {
   addMessageToStore,
   markConversationRead,
   addUnreadToConversation,
+  otherReadConversation,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -19,6 +20,7 @@ const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
 const MARK_CONVERSATION_READ = "MARK_CONVERSATION_READ";
 const ADD_TO_CONVERSATION_UNREAD_COUNT = "ADD_TO_CONVERSATION_UNREAD_COUNT";
+const MARK_CONVERSATION_OTHER_READ = "MARK_CONVERSATION_OTHER_READ";
 
 // ACTION CREATORS
 
@@ -85,6 +87,13 @@ export const addToConversationUnreadCount = (conversationId) => {
   };
 };
 
+export const otherReadConvo = (data) => {
+  return {
+    type: MARK_CONVERSATION_OTHER_READ,
+    payload: data,
+  };
+};
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -117,7 +126,8 @@ const reducer = (state = [], action) => {
       );
     case ADD_TO_CONVERSATION_UNREAD_COUNT:
       return addUnreadToConversation(state, action.payload);
-
+    case MARK_CONVERSATION_OTHER_READ:
+      return otherReadConversation(state, action.payload);
     default:
       return state;
   }

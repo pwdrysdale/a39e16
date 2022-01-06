@@ -23,12 +23,29 @@ const Messages = (props) => {
     [messages, sortMessages]
   );
 
+  // setup for the read message flag
+  // from the sorted message, get the id of the last read message where the user id is otherUsers id
+  const lastReadMessage = useMemo(() => {
+    const filteredMessages = sortedMessages.filter(
+      (message) => message.senderId !== otherUser.id && message.read
+    );
+    const lastMessage = filteredMessages[filteredMessages.length - 1];
+    return lastMessage ? lastMessage.id : null;
+  }, [sortedMessages, otherUser]);
+
+  // render the messages
   const renderedMessages = useMemo(() => {
     return sortedMessages.map((message, idx) => {
       const time = moment(message.createdAt).format("h:mm");
 
       return message.senderId === userId ? (
-        <SenderBubble key={idx} text={message.text} time={time} />
+        <SenderBubble
+          key={idx}
+          text={message.text}
+          time={time}
+          otherUser={otherUser}
+          readImg={lastReadMessage === message.id ? true : false}
+        />
       ) : (
         <OtherUserBubble
           key={idx}
@@ -38,7 +55,7 @@ const Messages = (props) => {
         />
       );
     });
-  }, [sortedMessages, otherUser, userId]);
+  }, [sortedMessages, otherUser, userId, lastReadMessage]);
 
   return <Box>{renderedMessages}</Box>;
 };

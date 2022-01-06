@@ -9,6 +9,7 @@ import {
   setSearchedUsers,
   markConversationAsRead,
   addToConversationUnreadCount,
+  otherReadConvo,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -135,6 +136,8 @@ export const setActiveChatWRead = (body) => async (dispatch) => {
     if (conversationId) {
       await axios.put(`/api/conversations`, { id: conversationId });
     }
+    socket.emit("conversation-read", { conversationId, userId });
+
     dispatch(setActiveChat(username));
     dispatch(markConversationAsRead(conversationId, userId));
   } catch (error) {
@@ -142,9 +145,23 @@ export const setActiveChatWRead = (body) => async (dispatch) => {
   }
 };
 
-export const newMessage = (body) => async (dispatch) => {
+// thunk creator for when a user reads a conversation
+// going through the socket
+export const othersRead = (body) => async (dispatch) => {
+  try {
+    const userId = store.getState().user.id;
+
+    const { conversationId } = body;
+
+    dispatch(otherReadConvo({ conversationId, userId }));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// handler for a new message coming in from the socket
+export const newMessage = (body) => async () => {
   const state = store.getState();
-  console.log(body);
   // current conversation partner from the store
   const conversationPartner = state.activeConversation;
 
@@ -165,6 +182,12 @@ export const newMessage = (body) => async (dispatch) => {
       axios.put(`/api/conversations`, { id: message.conversationId });
     }
     store.dispatch(setNewMessage({ ...message, read: true }, sender));
+
+    socket.emit("conversation-read", {
+      conversationId: message.conversationId,
+      userId: state.user.id,
+    });
+
     // if the current conversation is not the one to which the new message belongs
   } else {
     store.dispatch(setNewMessage(message, sender));

@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import store from "./store";
 import { removeOfflineUser, addOnlineUser } from "./store/conversations";
-import { newMessage } from "./store/utils/thunkCreators";
+import { newMessage, othersRead } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 
@@ -21,6 +21,11 @@ socket.on("connect", () => {
     // locally and on the server, otherwise we just add the message
     // note the display logic takes care of our own messages
     newMessage(data)(store.dispatch);
+  });
+
+  socket.on("conversation-read", (data) => {
+    othersRead(data)(store.dispatch);
+    // store.dispatch(otherReadConvo(data));
   });
 });
 

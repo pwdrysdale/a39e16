@@ -113,6 +113,27 @@ export const markConversationRead = (state, conversationId, userId) => {
   return newConversations;
 };
 
+// note that the userId here is the other user. This is to track where they are up to
+export const otherReadConversation = (state, payload) => {
+  const { conversationId, userId } = payload;
+  const newConversations = state.map((conversation) => {
+    if (conversation.id === conversationId) {
+      return {
+        ...conversation,
+        messages: conversation.messages.map((message) => {
+          if (message.senderId === userId) {
+            return {
+              ...message,
+              read: true,
+            };
+          } else return message;
+        }),
+      };
+    } else return conversation;
+  });
+  return newConversations;
+};
+
 export const addUnreadToConversation = (state, { conversationId }) => {
   const newConversations = state.map((conversation) => {
     if (conversation.id === conversationId) {
