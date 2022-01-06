@@ -37,7 +37,7 @@ const User = db.define("user", {
   },
 });
 
-User.prototype.correctPassword = function (password) {
+User.correctPassword = function (password) {
   return User.encryptPassword(password, this.salt()) === this.password();
 };
 
@@ -60,10 +60,10 @@ const setSaltAndPassword = (user) => {
   }
 };
 
-User.beforeCreate(setSaltAndPassword);
-User.beforeUpdate(setSaltAndPassword);
-User.beforeBulkCreate((users) => {
+User.beforeCreate = setSaltAndPassword;
+User.beforeUpdate = setSaltAndPassword;
+User.beforeBulkCreate = (users) => {
   users.forEach(setSaltAndPassword);
-});
+};
 
 module.exports = User;

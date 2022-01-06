@@ -6,7 +6,8 @@
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
-    "seed": "node db/seed.js"
+    "seed": "node db/seeders/defaultSeed.js",
+    "migrate": "cd db && npx sequelize-cli db:migrate"
   },
   "dependencies": {
     "connect-session-sequelize": "^7.0.4",
