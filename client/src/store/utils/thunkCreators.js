@@ -77,15 +77,16 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    const withUnreadCount = data.map((conversation) => {
-      const unreadMessages = conversation.messages.filter(
-        (message) =>
-          !message.read && conversation.otherUser.id === message.senderId
-      ).length;
-      return { ...conversation, unreadMessages };
-    });
 
-    dispatch(gotConversations(withUnreadCount));
+    const sortedConversations = data.map((conversation) => {
+      return {
+        ...conversation,
+        messages: conversation.messages.sort((a, b) => {
+          return a.createdAt.valueOf() - b.createdAt.valueOf() ? 1 : -1;
+        }),
+      };
+    });
+    dispatch(gotConversations(sortedConversations));
   } catch (error) {
     console.error(error);
   }
