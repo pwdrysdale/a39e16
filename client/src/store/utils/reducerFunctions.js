@@ -1,21 +1,26 @@
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
+  // Most of the Bug fix: Sending messages #1 ticket issues were here (in this function),
+  // to do with mutating the state.
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
+      latestMessageText: message.text,
     };
-    newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
   }
 
   return state.map((convo) => {
-    if (convo.id === message.conversationId) {
-      convo.messages.push(message);
-      convo.latestMessageText = message.text;
-      return convo;
+    if (message.conversationId && convo.id === message.conversationId) {
+      const newConvo = {
+        ...convo,
+        messages: [...convo.messages, message],
+        latestMessageText: message.text,
+      };
+      return newConvo;
     } else {
       return convo;
     }
@@ -69,10 +74,14 @@ export const addSearchedUsersToStore = (state, users) => {
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
-      convo.id = message.conversationId;
-      convo.messages.push(message);
-      convo.latestMessageText = message.text;
-      return convo;
+      const newConvo = {
+        ...convo,
+        id: message.conversationId,
+        messages: [...convo.messages, message],
+        latestMessageText: message.text,
+      };
+
+      return newConvo;
     } else {
       return convo;
     }
