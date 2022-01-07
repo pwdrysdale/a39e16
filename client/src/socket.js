@@ -25,7 +25,6 @@ socket.on("connect", () => {
 
   socket.on("conversation-read", (data) => {
     othersRead(data)(store.dispatch);
-    // store.dispatch(otherReadConvo(data));
   });
 });
 
