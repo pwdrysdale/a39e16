@@ -3,11 +3,13 @@ export const addMessageToStore = (state, payload) => {
   // if sender isn't null, that means the message needs to be put in a brand new convo
   // Most of the Bug fix: Sending messages #1 ticket issues were here (in this function),
   // to do with mutating the state.
+
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
+      unreadMessages: 0,
       latestMessageText: message.text,
     };
     return [newConvo, ...state];
@@ -86,4 +88,60 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       return convo;
     }
   });
+};
+
+// mark conversations as read
+// note that the userId argument is the current user's id (not the one
+// who's messages we are marking as read)
+export const markConversationRead = (state, conversationId, userId) => {
+  const newConversations = state.map((conversation) => {
+    if (conversation.id === conversationId) {
+      return {
+        ...conversation,
+        unreadMessages: 0,
+        messages: conversation.messages.map((message) => {
+          if (message.senderId === userId) {
+            return {
+              ...message,
+              read: true,
+            };
+          } else return message;
+        }),
+      };
+    } else return conversation;
+  });
+  return newConversations;
+};
+
+// note that the userId here is the other user. This is to track where they are up to
+export const otherReadConversation = (state, payload) => {
+  const { conversationId, userId } = payload;
+  const newConversations = state.map((conversation) => {
+    if (conversation.id === conversationId) {
+      return {
+        ...conversation,
+        messages: conversation.messages.map((message) => {
+          if (message.senderId === userId) {
+            return {
+              ...message,
+              read: true,
+            };
+          } else return message;
+        }),
+      };
+    } else return conversation;
+  });
+  return newConversations;
+};
+
+export const addUnreadToConversation = (state, { conversationId }) => {
+  const newConversations = state.map((conversation) => {
+    if (conversation.id === conversationId) {
+      return {
+        ...conversation,
+        unreadMessages: conversation.unreadMessages + 1,
+      };
+    } else return conversation;
+  });
+  return newConversations;
 };

@@ -4,6 +4,9 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  markConversationRead,
+  addUnreadToConversation,
+  otherReadConversation,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +18,9 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const MARK_CONVERSATION_READ = "MARK_CONVERSATION_READ";
+const ADD_TO_CONVERSATION_UNREAD_COUNT = "ADD_TO_CONVERSATION_UNREAD_COUNT";
+const MARK_CONVERSATION_OTHER_READ = "MARK_CONVERSATION_OTHER_READ";
 
 // ACTION CREATORS
 
@@ -67,6 +73,27 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
+export const markConversationAsRead = (conversationId, userId) => {
+  return {
+    type: MARK_CONVERSATION_READ,
+    payload: { conversationId, userId },
+  };
+};
+
+export const addToConversationUnreadCount = (conversationId) => {
+  return {
+    type: ADD_TO_CONVERSATION_UNREAD_COUNT,
+    payload: { conversationId },
+  };
+};
+
+export const otherReadConvo = (data) => {
+  return {
+    type: MARK_CONVERSATION_OTHER_READ,
+    payload: data,
+  };
+};
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -91,6 +118,16 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
+    case MARK_CONVERSATION_READ:
+      return markConversationRead(
+        state,
+        action.payload.conversationId,
+        action.payload.userId
+      );
+    case ADD_TO_CONVERSATION_UNREAD_COUNT:
+      return addUnreadToConversation(state, action.payload);
+    case MARK_CONVERSATION_OTHER_READ:
+      return otherReadConversation(state, action.payload);
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FormControl, FilledInput, InputAdornment } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,9 +28,9 @@ const Search = (props) => {
   const classes = useStyles();
   const { handleChange } = props;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = useCallback((event) => {
     event.preventDefault();
-  };
+  }, []);
 
   return (
     <form onSubmit={handleSubmit}>

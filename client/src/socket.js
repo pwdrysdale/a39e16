@@ -1,10 +1,7 @@
 import io from "socket.io-client";
 import store from "./store";
-import {
-  setNewMessage,
-  removeOfflineUser,
-  addOnlineUser,
-} from "./store/conversations";
+import { removeOfflineUser, addOnlineUser } from "./store/conversations";
+import { newMessage, othersRead } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 
@@ -19,7 +16,15 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    store.dispatch(setNewMessage(data.message, data.sender));
+    // check to see if the current conversation is the one to which
+    // the new message belongs. If it is, we mark it as read both
+    // locally and on the server, otherwise we just add the message
+    // note the display logic takes care of our own messages
+    newMessage(data)(store.dispatch);
+  });
+
+  socket.on("conversation-read", (data) => {
+    othersRead(data)(store.dispatch);
   });
 });
 
